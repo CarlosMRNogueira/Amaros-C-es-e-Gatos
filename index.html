@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amaro's Cães e Gatos — MVP</title>
+  <style>
+    :root {
+      --green: #315f4a;
+      --green-dark: #234637;
+      --green-light: #eaf2ed;
+      --cream: #faf8f3;
+      --white: #ffffff;
+      --text: #24302a;
+      --muted: #68736d;
+      --border: #dfe5e0;
+      --accent: #d98a4a;
+      --danger: #a94848;
+      --shadow: 0 8px 28px rgba(35, 70, 55, .10);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green));
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 3px 15px rgba(0,0,0,.12);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: auto;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 12px;
+      font-size: 22px;
+    }
+
+    nav { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+    nav button {
+      border: 0;
+      background: transparent;
+      color: white;
+      padding: 9px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: .92rem;
+    }
+    nav button:hover { background: rgba(255,255,255,.12); }
+
+    .hero {
+      background: linear-gradient(180deg, #edf4ef 0%, var(--cream) 100%);
+      padding: 58px 22px 42px;
+    }
+    .hero-inner { max-width: 1100px; margin: auto; display: grid; grid-template-columns: 1.3fr .7fr; gap: 40px; align-items: center; }
+    .eyebrow { color: var(--green); font-weight: 800; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; }
+    h1 { font-size: clamp(2.1rem, 5vw, 4rem); line-height: 1.02; margin: 10px 0 17px; letter-spacing: -.04em; }
+    .hero p { max-width: 650px; font-size: 1.08rem; line-height: 1.65; color: #526059; margin-bottom: 24px; }
+
+    .hero-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .hero-animals { font-size: 76px; line-height: 1; margin-bottom: 15px; }
+    .hero-card strong { display:block; font-size: 1.15rem; }
+    .hero-card span { color: var(--muted); font-size: .9rem; }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 17px;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--green); color: white; box-shadow: 0 5px 15px rgba(49,95,74,.2); }
+    .btn-secondary { background: white; color: var(--green-dark); border: 1px solid var(--border); }
+    .btn-danger { background: #fff1f1; color: var(--danger); border: 1px solid #f0d2d2; }
+
+    main { max-width: 1100px; margin: auto; padding: 40px 22px 70px; }
+    section { scroll-margin-top: 90px; margin-bottom: 48px; }
+    .section-title { margin-bottom: 20px; }
+    .section-title h2 { margin: 0 0 7px; font-size: 1.65rem; }
+    .section-title p { margin: 0; color: var(--muted); }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 23px; box-shadow: 0 5px 20px rgba(35,70,55,.05); }
+    .grid > .card:only-child { grid-column: 1 / -1; }
+    .card h3 { margin-top: 0; }
+
+    form { display: grid; gap: 14px; }
+    label { font-size: .88rem; font-weight: 700; color: #44514a; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #cfd8d2;
+      border-radius: 9px;
+      padding: 11px 12px;
+      margin-top: 6px;
+      font: inherit;
+      color: var(--text);
+      background: white;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: 2px solid rgba(49,95,74,.16); border-color: var(--green); }
+
+    .two { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .notice { padding: 12px 14px; background: var(--green-light); border-radius: 10px; color: var(--green-dark); font-size: .9rem; line-height: 1.5; }
+    .notice strong { display:block; margin-bottom: 2px; }
+
+    .searchbar { display: grid; grid-template-columns: 1fr 190px auto; gap: 10px; margin-bottom: 17px; }
+    .results { display: grid; gap: 13px; }
+    .pet { border: 1px solid var(--border); border-radius: 14px; padding: 15px; display: grid; grid-template-columns: 78px 1fr auto; gap: 15px; align-items: center; background: #fff; }
+    .pet-photo { width: 78px; height: 78px; border-radius: 12px; object-fit: cover; background: #eef2ef; display:grid; place-items:center; font-size: 34px; overflow:hidden; }
+    .pet-photo img { width:100%; height:100%; object-fit:cover; }
+    .pet h4 { margin: 0 0 5px; }
+    .pet p { margin: 3px 0; color: var(--muted); font-size: .88rem; }
+    .badge { display:inline-block; padding: 5px 8px; border-radius: 999px; background: #edf4ef; color: var(--green-dark); font-size: .75rem; font-weight: 800; }
+
+    .empty { padding: 28px; text-align:center; color: var(--muted); border: 1px dashed #cfd8d2; border-radius: 14px; }
+
+    .pet { cursor: pointer; transition: transform .15s, box-shadow .15s, border-color .15s; }
+    .pet:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: #c4d2c8; }
+    .pet-action { white-space: nowrap; }
+
+    .detail-page { display:none; }
+    .detail-layout { display:grid; grid-template-columns: .9fr 1.1fr; gap:22px; }
+    .detail-photo { min-height:320px; border-radius:16px; overflow:hidden; background:#eef2ef; display:grid; place-items:center; font-size:100px; }
+    .detail-photo img { width:100%; height:100%; min-height:320px; object-fit:cover; }
+    .detail-meta { display:grid; gap:8px; margin:18px 0 22px; }
+    .detail-meta div { padding:11px 13px; background:#f6f8f6; border-radius:10px; }
+    .comments { margin-top:22px; }
+    .comment-list { display:grid; gap:11px; margin-top:18px; }
+    .comment { padding:14px 15px; border:1px solid var(--border); border-radius:12px; background:#fff; }
+    .comment strong { display:block; margin-bottom:4px; }
+    .comment small { color:var(--muted); }
+    .back-row { margin-bottom:20px; }
+
+    .footer { text-align:center; color: var(--muted); font-size: .82rem; padding: 22px; border-top: 1px solid var(--border); }
+
+    .toast { position: fixed; right: 20px; bottom: 20px; background: var(--green-dark); color:white; padding: 13px 17px; border-radius: 10px; box-shadow: var(--shadow); opacity:0; transform:translateY(10px); pointer-events:none; transition:.2s; z-index:20; }
+    .toast.show { opacity:1; transform:translateY(0); }
+
+    @media (max-width: 780px) {
+      .hero-inner, .grid { grid-template-columns: 1fr; }
+      .nav { align-items:flex-start; }
+      nav { display:none; }
+      .searchbar, .two, .detail-layout { grid-template-columns: 1fr; }
+      .pet { grid-template-columns: 62px 1fr; }
+      .pet .badge-wrap { grid-column: 2; }
+      .pet-photo { width:62px; height:62px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand"><div class="brand-mark">🐾</div> Amaro's Cães e Gatos</div>
+      <nav>
+        <button onclick="go('inicio')">Início</button>
+        <button onclick="go('registrar')">Realizar cadastro</button>
+        <button onclick="go('avistamentos')">Ver avistamentos</button>
+      </nav>
+    </div>
+  </header>
+
+  <div id="inicio" class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow">MVP — prova de conceito</div>
+        <h1>Viu ou perdeu seu pet em Santo Amaro da Imperatriz?</h1><br><br>
+        <button class="btn btn-primary" onclick="go('registrar')">Realizar cadastro</button>
+        <button class="btn btn-secondary" onclick="go('avistamentos')">Consultar avistamentos</button>
+      </div>
+      <div class="hero-card">
+        <div class="hero-animals">🐕 🐈</div>
+        <strong>Amaro's Cães e Gatos</strong>
+        <span>Protótipo funcional do MVP</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section id="registrar">
+      <div class="section-title">
+        <h2>Realizar cadastro</h2>
+        <p>Cadastre as informações básicas de um cão ou gato visto na região.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <form id="petForm">
+            <div class="two">
+              <label>Espécie
+                <select id="species" required>
+                  <option value="">Selecione</option>
+                  <option>Cão</option>
+                  <option>Gato</option>
+                </select>
+              </label>
+              <label>Data do avistamento
+                <input id="date" type="date" required />
+              </label>
+            </div>
+            <label>Local onde foi visto
+              <input id="location" type="text" placeholder="Ex.: Praça de Santo Amaro" required />
+            </label>
+            <label>Descrição do animal
+              <textarea id="description" placeholder="Cor, porte, características, coleira etc." required></textarea>
+            </label>
+            <label>Foto (opcional)
+              <input id="photo" type="file" accept="image/*" />
+            </label>
+            <button class="btn btn-primary" type="submit">Realizar cadastro</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="avistamentos">
+      <div class="section-title">
+        <h2>Avistamentos registrados</h2>
+        <p>Consulte os registros disponíveis neste MVP.</p>
+      </div>
+      <div class="card">
+        <div class="searchbar">
+          <input id="search" type="search" placeholder="Pesquisar por local ou descrição..." />
+          <select id="filterSpecies">
+            <option value="Todos">Todos</option>
+            <option value="Cão">Cães</option>
+            <option value="Gato">Gatos</option>
+          </select>
+          <button class="btn btn-secondary" onclick="renderPets()">Pesquisar</button>
+        </div>
+        <div id="results" class="results"></div>
+      </div>
+    </section>
+
+    <section id="detalhes" class="detail-page">
+      <div class="back-row">
+        <button class="btn btn-secondary" onclick="backToListings()">← Voltar aos avistamentos</button>
+      </div>
+      <div id="detailContent"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <footer class="footer">Amaro's Cães e Gatos — MVP para prova de conceito</footer>
+
+  <script>
+    const KEY = 'amaros_caes_gatos_mvp';
+
+    const demoPets = [
+      {
+        id: 'demo-1', species: 'Cão', date: '2026-08-28', location: 'Bairro Calemba',
+        description: 'Cão de porte médio, pelo caramelo e coleira azul. Visto caminhando próximo à praça.', photo: ''
+      },
+      {
+        id: 'demo-2', species: 'Gato', date: '2026-08-27', location: 'Centro de Santo Amaro',
+        description: 'Gato branco e cinza, porte pequeno, sem identificação aparente.', photo: ''
+      }
+    ];
+
+    function getPets() {
+      const saved = JSON.parse(localStorage.getItem(KEY) || '[]');
+      return [...saved, ...demoPets];
+    }
+
+    function savePet(pet) {
+      const saved = JSON.parse(localStorage.getItem(KEY) || '[]');
+      saved.unshift(pet);
+      localStorage.setItem(KEY, JSON.stringify(saved));
+    }
+
+    function formatDate(date) {
+      if (!date) return '';
+      return new Date(date + 'T12:00:00').toLocaleDateString('pt-BR');
+    }
+
+    function renderPets() {
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      const species = document.getElementById('filterSpecies').value;
+      const results = document.getElementById('results');
+      const pets = getPets().filter(p => {
+        const text = `${p.location} ${p.description}`.toLowerCase();
+        return (species === 'Todos' || p.species === species) && (!q || text.includes(q));
+      });
+
+      if (!pets.length) {
+        results.innerHTML = '<div class="empty">Nenhum avistamento encontrado.</div>';
+        return;
+      }
+
+      results.innerHTML = pets.map(p => `
+        <article class="pet" onclick="openPet('${escapeHtml(p.id)}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ') openPet('${escapeHtml(p.id)}')">
+          <div class="pet-photo">${p.photo ? `<img src="${p.photo}" alt="Foto do animal" />` : (p.species === 'Cão' ? '🐕' : '🐈')}</div>
+          <div>
+            <h4>${p.species} avistado</h4>
+            <p><strong>Local:</strong> ${escapeHtml(p.location)}</p>
+            <p><strong>Data:</strong> ${formatDate(p.date)}</p>
+            <p>${escapeHtml(p.description)}</p>
+          </div>
+          <div class="badge-wrap pet-action"><span class="badge">Ver detalhes →</span></div>
+        </article>
+      `).join('');
+    }
+
+    function openPet(id) {
+      const pet = getPets().find(p => String(p.id) === String(id));
+      if (!pet) return;
+
+      document.getElementById('inicio').style.display = 'none';
+      document.getElementById('registrar').style.display = 'none';
+      document.getElementById('avistamentos').style.display = 'none';
+      const detail = document.getElementById('detalhes');
+      detail.style.display = 'block';
+      renderPetDetail(pet);
+      history.replaceState(null, '', '#' + encodeURIComponent(id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToListings() {
+      document.getElementById('inicio').style.display = '';
+      document.getElementById('registrar').style.display = '';
+      document.getElementById('avistamentos').style.display = '';
+      document.getElementById('detalhes').style.display = 'none';
+      history.replaceState(null, '', '#avistamentos');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function getComments(id) {
+      const all = JSON.parse(localStorage.getItem('amaros_caes_gatos_comments') || '{}');
+      return all[String(id)] || [];
+    }
+
+    function saveComment(id, author, text) {
+      const all = JSON.parse(localStorage.getItem('amaros_caes_gatos_comments') || '{}');
+      const key = String(id);
+      if (!all[key]) all[key] = [];
+      all[key].unshift({ author, text, date: new Date().toISOString() });
+      localStorage.setItem('amaros_caes_gatos_comments', JSON.stringify(all));
+    }
+
+    function renderPetDetail(pet) {
+      const comments = getComments(pet.id);
+      const photo = pet.photo ? `<img src="${pet.photo}" alt="Foto do animal" />` : (pet.species === 'Cão' ? '🐕' : '🐈');
+      const commentHtml = comments.length ? comments.map(c => `
+        <div class="comment">
+          <strong>${escapeHtml(c.author || 'Visitante')}</strong>
+          <div>${escapeHtml(c.text)}</div>
+          <small>${new Date(c.date).toLocaleString('pt-BR')}</small>
+        </div>
+      `).join('') : '<div class="empty">Ainda não há comentários sobre este animal.</div>';
+
+      document.getElementById('detailContent').innerHTML = `
+        <div class="section-title">
+          <h2>${pet.species} avistado</h2>
+          <p>Detalhes do avistamento</p>
+        </div>
+        <div class="detail-layout">
+          <div class="card">
+            <div class="detail-photo">${photo}</div>
+            <div class="detail-meta">
+              <div><strong>Espécie:</strong> ${escapeHtml(pet.species)}</div>
+              <div><strong>Local:</strong> ${escapeHtml(pet.location)}</div>
+              <div><strong>Data:</strong> ${formatDate(pet.date)}</div>
+              <div><strong>Descrição:</strong> ${escapeHtml(pet.description)}</div>
+            </div>
+          </div>
+
+          <div class="card comments">
+            <h3>Comentários da comunidade</h3>
+            <p style="color:var(--muted); margin-top:-6px;">Alguém reconhece este animal ou tem alguma informação?</p>
+            <form id="commentForm">
+              <label>Seu nome
+                <input id="commentAuthor" type="text" placeholder="Como você gostaria de aparecer?" />
+              </label>
+              <label>Comentário
+                <textarea id="commentText" placeholder="Ex.: Acho que vi este cão perto da igreja ontem." required></textarea>
+              </label>
+              <button class="btn btn-primary" type="submit">Adicionar comentário</button>
+            </form>
+            <div class="comment-list">${commentHtml}</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('commentForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const author = document.getElementById('commentAuthor').value.trim() || 'Visitante';
+        const text = document.getElementById('commentText').value.trim();
+        if (!text) return;
+        saveComment(pet.id, author, text);
+        renderPetDetail(pet);
+        toast('Comentário adicionado com sucesso!');
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function go(id) {
+      const detail = document.getElementById('detalhes');
+      if (detail.style.display === 'block') {
+        document.getElementById('inicio').style.display = '';
+        document.getElementById('registrar').style.display = '';
+        document.getElementById('avistamentos').style.display = '';
+        detail.style.display = 'none';
+      }
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function toast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    document.getElementById('date').value = new Date().toISOString().slice(0,10);
+
+    document.getElementById('petForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const file = document.getElementById('photo').files[0];
+      let photo = '';
+
+      if (file) {
+        photo = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(file);
+        });
+      }
+
+      savePet({
+        id: Date.now().toString(),
+        species: document.getElementById('species').value,
+        date: document.getElementById('date').value,
+        location: document.getElementById('location').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        photo
+      });
+
+      event.target.reset();
+      document.getElementById('date').value = new Date().toISOString().slice(0,10);
+      toast('Avistamento cadastrado com sucesso!');
+      renderPets();
+      go('avistamentos');
+    });
+
+    document.getElementById('search').addEventListener('input', renderPets);
+    document.getElementById('filterSpecies').addEventListener('change', renderPets);
+    renderPets();
+
+    const initialHash = decodeURIComponent(location.hash.replace('#', ''));
+    if (initialHash && initialHash !== 'avistamentos') {
+      setTimeout(() => openPet(initialHash), 0);
+    }
+  </script>
+</body>
+</html>
